@@ -11,6 +11,12 @@ class ChatRequest(BaseModel):
 def get_current_time():
     return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
+def calculate(expression: str):
+    try:
+        return eval(expression,{"__builtins__": {}})
+    except Exception as e:
+        return f"Error: {e}"
+    
 tools = [{
     "type":"function",
     "function": {
@@ -22,10 +28,28 @@ tools = [{
             "required":[]
         }
     }
+},
+{
+    "type":"function",
+    "function": {
+        "name": "calculate",
+        "description": "Evaluate a mathematical expression, e.g. '47 * 12'",
+        "parameters":{
+            "type":"object",
+            "properties":{
+                "expression":{
+                    "type":"string",
+                    "description":"The math expression to evaluate"
+                }
+            },
+            "required":["expression"]
+        }
+    }
 }]
 
 available_functions = {
-    "get_current_time": get_current_time
+    "get_current_time": get_current_time,
+    "calculate": calculate
 }
 
 @app.post("/chat")
@@ -43,7 +67,8 @@ def chat(request: ChatRequest):
         for tool_call in message["tool_calls"]:
             func_name = tool_call["function"]["name"]
             func = available_functions[func_name]
-            result = func()
+            args = tool_call["function"].get("arguments", {})
+            result = func(**args)
 
             messages.append(message)
             messages.append({
