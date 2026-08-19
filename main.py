@@ -1,14 +1,16 @@
+from dotenv import load_dotenv
+load_dotenv() 
 from fastapi import FastAPI
 from pydantic import BaseModel
 import ollama
-from tools import tools, available_functions #Gets all tool functions from tools folder
+from tools import tools, available_functions # Gets all tool functions from tools folder
 
 app = FastAPI()
 
 class ChatRequest(BaseModel):
     message: str
 
-@app.post("/chat") #POST endpoint for chat requests
+@app.post("/chat") # POST endpoint for chat requests
 def chat(request: ChatRequest):
     messages = [{"role":"user","content":request.message}]
 
