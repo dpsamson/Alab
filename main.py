@@ -1,58 +1,14 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 import ollama
-from datetime import datetime
+from tools import tools, available_functions #Gets all tool functions from tools folder
 
 app = FastAPI()
 
 class ChatRequest(BaseModel):
     message: str
 
-def get_current_time():
-    return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
-def calculate(expression: str):
-    try:
-        return eval(expression,{"__builtins__": {}})
-    except Exception as e:
-        return f"Error: {e}"
-    
-tools = [{
-    "type":"function",
-    "function": {
-        "name": "get_current_time",
-        "description": "Get the current time and date",
-        "parameters":{
-            "type":"object",
-            "properties":{},
-            "required":[]
-        }
-    }
-},
-{
-    "type":"function",
-    "function": {
-        "name": "calculate",
-        "description": "Evaluate a mathematical expression, e.g. '47 * 12'",
-        "parameters":{
-            "type":"object",
-            "properties":{
-                "expression":{
-                    "type":"string",
-                    "description":"The math expression to evaluate"
-                }
-            },
-            "required":["expression"]
-        }
-    }
-}]
-
-available_functions = {
-    "get_current_time": get_current_time,
-    "calculate": calculate
-}
-
-@app.post("/chat")
+@app.post("/chat") #POST endpoint for chat requests
 def chat(request: ChatRequest):
     messages = [{"role":"user","content":request.message}]
 
