@@ -1,14 +1,25 @@
 from dotenv import load_dotenv
 load_dotenv() 
-from fastapi import FastAPI
+from fastapi import FastAPI, File, UploadFile
 from pydantic import BaseModel
 import ollama
 from tools import tools, available_functions # Gets all tool functions from tools folder
+from tools.transcribe import transcribe_audio
+import shutil
 
 app = FastAPI()
 
 class ChatRequest(BaseModel):
     message: str
+
+@app.post("/transcribe")
+async def transcribe(file: UploadFile = File (...)):
+    temp_path = f"temp_{file.filename}"
+    with open (temp_path, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+
+    text = transcribe_audio(temp_path)
+    return{"text":text}
 
 @app.post("/chat") # POST endpoint for chat requests
 def chat(request: ChatRequest):
