@@ -12,18 +12,8 @@ app = FastAPI()
 class ChatRequest(BaseModel):
     message: str
 
-@app.post("/transcribe")
-async def transcribe(file: UploadFile = File (...)):
-    temp_path = f"temp_{file.filename}"
-    with open (temp_path, "wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
-
-    text = transcribe_audio(temp_path)
-    return{"text":text}
-
-@app.post("/chat") # POST endpoint for chat requests
-def chat(request: ChatRequest):
-    messages = [{"role":"user","content":request.message}]
+def process_chat(user_message: str):
+    messages = [{"role":"user","content":user_message}]
 
     response = ollama.chat(
         model = "qwen2.5:7b",
@@ -46,6 +36,31 @@ def chat(request: ChatRequest):
             })
 
         final_response = ollama.chat(model="qwen2.5:7b", messages=messages)
-        return {"reply": final_response["message"]["content"]}
+        return final_response["message"]["content"]
 
-    return {"reply": message["content"]}
+    return message["content"]
+
+@app.post("/chat")
+def chat(request:ChatRequest):
+    reply = process_chat(request.message)
+    return {"reply": reply}
+
+@app.post("/transcribe")
+async def transcribe(file: UploadFile = File (...)):
+    temp_path = f"temp_{file.filename}"
+    with open (temp_path, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+
+    text = transcribe_audio(temp_path)
+    return{"text":text}
+
+@app.post("/voice-chat")
+async def voice_chat(file: UploadFile = File(...)):
+    temp_path = f"temp_{file.filename}"
+    with open(temp_path, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+
+    transcribed_text = transcribe_audio(temp_path)
+    reply = process_chat(transcribed_text)
+
+    return {"transcribed": transcribed_text, "reply" : reply}
