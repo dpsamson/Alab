@@ -7,6 +7,9 @@ The name Alab represents the developer's long-standing interest and passion for 
 ## Current Capabilities
 - Tool-calling agentic loop (local LLM via Ollama)
 - Tools: time, calculator, file read/write, web search
+- Voice input (speech-to-text via Whisper)
+- Voice output (text-to-speech)
+- Full voice conversation loop: speak a request, get a spoken reply
 
 ## Tech Stack
 - Ollama (qwen2.5:7b)
@@ -19,15 +22,21 @@ The name Alab represents the developer's long-standing interest and passion for 
    `python -m venv venv`
    `.\venv\Scripts\Activate` (Windows)
 3. Install dependencies: `pip install -r requirements.txt`
-4. Install Ollama and pull the model: `ollama pull qwen2.5:7b`
-5. Create a `.env` file with your Tavily API key: `TAVILY_API_KEY=your_key_here`
-6. Run the server: `uvicorn main:app --reload`
-7. Send a test request to `POST http://127.0.0.1:8000/chat` with a JSON body: `{"message": "your message here"}`
+4. Install ffmpeg (required for Whisper) — e.g. `winget install ffmpeg` on Windows
+5. Install Ollama and pull the model: `ollama pull qwen2.5:7b`
+6. Create a `.env` file with your Tavily API key: `TAVILY_API_KEY=your_key_here`
+7. Run the server: `uvicorn main:app --reload`
+8. Test endpoints:
+   - `POST /chat` with JSON `{"message": "your message"}`
+   - `POST /transcribe` with an audio file
+   - `POST /voice-chat` with an audio file (full voice loop)
 
-
+## Known Issues
+- Occasional CUDA crash when testing, specifically if Ollama is started via windows startup apps
+  
 ## Roadmap
 - [x] Phase 1: Core tool-calling backbone
-- [ ] Phase 2: Voice (Whisper + TTS)
+- [X] Phase 2: Voice (Whisper + TTS)
 - [ ] Phase 3: Persistent memory
 - [ ] Phase 4: Domain-specific tools
 
