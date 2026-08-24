@@ -22,24 +22,29 @@ def save_memory(key: str, value: str):
     conn.close()
     return f"Saved: {key} = {value}"
 
-def recall_memory(key: str):
+def recall_memory(key: str = None):
+    print("DEBUG recall_memory called with key:", key)
     conn = sqlite3.connect(DB_PATH)
-    cursor = conn.execute("SELECT value FROM memory WHERE key = ?", (key,))
-    row = cursor.fetchone()
+    if key:
+        cursor = conn.execute("SELECT value FROM memory WHERE key = ?", (key,))
+        row = cursor.fetchone()
+        if row:
+            conn.close()
+            return row[0]
+    cursor = conn.execute("SELECT key, value FROM memory")
+    rows = cursor.fetchall()
     conn.close()
-    if row:
-        return row[0]
-    return f"No memory found for '{key}'"
+    return {k: v for k, v in rows} if rows else "No memories found"
 
 save_memory_schema = {
-    "type" : "function",
+    "type": "function",
     "function": {
         "name": "save_memory",
         "description": "Save a piece of information to long-term memory, identified by a key",
-        "parameters":{
-            "type":"object",
-            "properties":{
-                "key": {"type":"string", "description": "A short identifier for this memory, e.g. 'user_name' or 'favorite_course'"},
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "key": {"type": "string", "description": "A short identifier for this memory, e.g. 'user_name' or 'favorite_course'"},
                 "value": {"type": "string", "description": "The information to remember"}
             },
             "required": ["key", "value"]
@@ -51,13 +56,13 @@ recall_memory_schema = {
     "type": "function",
     "function": {
         "name": "recall_memory",
-        "description": "Retrieve a previously saved piece of information by its key",
+        "description": "Retrieve saved information. Provide a key if you know it, or omit it to retrieve all saved memories.",
         "parameters": {
             "type": "object",
             "properties": {
-                "key": {"type": "string", "description": "The identifier used when the memory was saved"}
-                },
-                "required": ["key"]
-            }
+                "key": {"type": "string", "description": "The identifier used when the memory was saved (optional)"}
+            },
+            "required": []
         }
     }
+}
