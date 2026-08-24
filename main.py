@@ -1,10 +1,12 @@
 from dotenv import load_dotenv
 load_dotenv() 
 from fastapi import FastAPI, File, UploadFile
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 import ollama
 from tools import tools, available_functions # Gets all tool functions from tools folder
 from tools.transcribe import transcribe_audio
+from tools.speak import text_to_speech
 import shutil
 
 app = FastAPI()
@@ -62,5 +64,6 @@ async def voice_chat(file: UploadFile = File(...)):
 
     transcribed_text = transcribe_audio(temp_path)
     reply = process_chat(transcribed_text)
+    audio_path = text_to_speech(reply)
 
-    return {"transcribed": transcribed_text, "reply" : reply}
+    return FileResponse(audio_path, media_type = "audio/wav", filename = "response.wav")
