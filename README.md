@@ -34,10 +34,11 @@ The name Alab represents the developer's long-standing interest and passion for 
 
 ## Known Issues
 - Occasional CUDA crash when testing, specifically if Ollama is started via windows startup apps
-  
+- Local models (qwen2.5:7b) don't reliably call tools proactively without explicit system prompt guidance — fixed for memory tools via an explicit system prompt instructing when to check/save memory.
+
 ## Roadmap
 - [x] Phase 1: Core tool-calling backbone
-- [X] Phase 2: Voice (Whisper + TTS)
-- [ ] Phase 3: Persistent memory
+- [x] Phase 2: Voice (Whisper + TTS)
+- [x] Phase 3: Persistent memory
 - [ ] Phase 4: Domain-specific tools
 
