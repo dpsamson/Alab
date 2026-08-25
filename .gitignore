@@ -2,7 +2,7 @@ venv/
 __pycache__/
 *.pyc
 .env
-.m4a
-.wav
-.mp3
+*.m4a
+*.wav
+*.mp3
 alab_memory.db

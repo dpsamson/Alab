@@ -16,7 +16,7 @@ class ChatRequest(BaseModel):
 
 def process_chat(user_message: str):
     messages = [
-        {"role": "system", "content": "You have access to a memory tool. Whenever the user asks about themselves (their name, preferences, past info, or anything personal), ALWAYS call recall_memory first before answering, even if you're unsure whether anything is saved."},
+        {"role": "system", "content": "You have access to memory tools. Whenever the user asks about themselves, ALWAYS call recall_memory first. If the user shares personal information (name, preferences, ongoing projects) without explicitly saying 'remember', proactively save it using save_memory. Use list_memories if the user asks what you know about them."},
         {"role": "user", "content": user_message}
     ]
     response = ollama.chat(

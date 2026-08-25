@@ -36,6 +36,15 @@ def recall_memory(key: str = None):
     conn.close()
     return {k: v for k, v in rows} if rows else "No memories found"
 
+def list_memories():
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.execute("SELECT key, value FROM memory")
+    rows = cursor.fetchall()
+    conn.close()
+    if not rows:
+        return "No memories saved yet."
+    return "\n".join([f"{k}: {v}" for k, v in rows])
+
 save_memory_schema = {
     "type": "function",
     "function": {
@@ -62,6 +71,19 @@ recall_memory_schema = {
             "properties": {
                 "key": {"type": "string", "description": "The identifier used when the memory was saved (optional)"}
             },
+            "required": []
+        }
+    }
+}
+
+list_memories_schema = {
+    "type": "function",
+    "function": {
+        "name": "list_memories",
+        "description": "List everything currently saved in long-term memory",
+        "parameters": {
+            "type": "object",
+            "properties": {},
             "required": []
         }
     }
