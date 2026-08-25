@@ -10,6 +10,7 @@ The name Alab represents the developer's long-standing interest and passion for 
 - Voice input (speech-to-text via Whisper)
 - Voice output (text-to-speech)
 - Full voice conversation loop: speak a request, get a spoken reply
+- Persistent memory: saves and recalls facts across sessions (SQLite), with proactive save/recall via system prompt guidance
 
 ## Tech Stack
 - Ollama (qwen2.5:7b)
