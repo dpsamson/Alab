@@ -19,10 +19,7 @@ def analyze_job_posting(job_text: str):
         "job_text": job_text,
         "known_skills": known_skills,
         "instruction_for_model": (
-            "Compare the job_text against known_skills. Extract company, role, "
-            "and deadline if present in the test. Identify missing_skills (skills"
-            "mentioned in the poisting that are NOT in known_skills). Then call"
-            "save_application with the extracted data."
+            "Compare the job_text against known_skills. Extract company, role, and deadline if present in the text. Identify missing_skills (skills mentioned in the posting that are NOT in known_skills). Then call save_application with the extracted data."
         )
     }
 
