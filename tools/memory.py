@@ -32,6 +32,7 @@ def init_applications_table(conn):
         )
     """)
     conn.commit()
+    conn.close()
 
 init_applications_table()
 
