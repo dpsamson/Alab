@@ -1,6 +1,6 @@
 import sqlite3
 
-DB_PATH = "memory.db"
+DB_PATH = "alab_memory.db"
 
 def analyze_job_posting(job_text: str):
     """
@@ -11,7 +11,7 @@ def analyze_job_posting(job_text: str):
     """
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
-    cursor.execute("SELECT key, value FROM memories WHERE key LIKE 'skill_%'")
+    cursor.execute("SELECT key, value FROM memory WHERE key LIKE 'skill_%'")
     known_skills = {row[0].replace("skill_",""): row[1] for row in cursor.fetchall()}
     conn.close()
 

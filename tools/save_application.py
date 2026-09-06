@@ -1,6 +1,6 @@
 import sqlite3
 
-DB_PATH = "memory.db"
+DB_PATH = "alab_memory.db"
 
 def save_application_details(company: str,
                      role: str,
@@ -11,7 +11,7 @@ def save_application_details(company: str,
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     cursor.execute("""
-        INSERT INTO applicaitons (company, role, url, deadline, missing_skills, estimated_study_time)
+        INSERT INTO applications (company, role, url, deadline, missing_skills, estimated_study_time)
         VALUES (?, ?, ?, ?, ?, ?)
     """, (company, role, url, deadline, missing_skills, estimated_study_time))
     conn.commit()

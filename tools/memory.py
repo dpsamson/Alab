@@ -33,6 +33,8 @@ def init_applications_table(conn):
     """)
     conn.commit()
 
+init_applications_table()
+
 def save_memory(key: str, value: str):
     conn = sqlite3.connect(DB_PATH)
     conn.execute("INSERT OR REPLACE INTO memory (key, value) VALUES (?, ?)", (key, value))
