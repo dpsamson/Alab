@@ -15,7 +15,8 @@ def init_db():
 
 init_db()
 
-def init_applications_table(conn):
+def init_applications_table():
+    conn = sqlite3.connect(DB_PATH)
     conn.execute("""
         CREATE TABLE IF NOT EXISTS applications (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
