@@ -15,6 +15,24 @@ def init_db():
 
 init_db()
 
+def init_applications_table(conn):
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS applications (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            company TEXT NOT NULL,
+            role TEXT NOT NULL,
+            url TEXT,
+            deadline TEXT,
+            missing_skills TEXT,
+            estimated_study_time TEXT,
+            logged_study_time REAL DEFAULT 0,
+            status TEXT DEFAULT 'not_applied',
+            raw_posting TEXT,
+            created_at TEXT DEFAULT CURRENT_TIMESTAMP
+        )
+    """)
+    conn.commit()
+
 def save_memory(key: str, value: str):
     conn = sqlite3.connect(DB_PATH)
     conn.execute("INSERT OR REPLACE INTO memory (key, value) VALUES (?, ?)", (key, value))
