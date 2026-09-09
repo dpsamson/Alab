@@ -11,6 +11,7 @@ The name Alab represents the developer's long-standing interest and passion for 
 - Voice output (text-to-speech)
 - Full voice conversation loop: speak a request, get a spoken reply
 - Persistent memory: saves and recalls facts across sessions (SQLite), with proactive save/recall via system prompt guidance
+- Job-hunting tech-stack gap analysis: paste a job description and Alab compares it against known skills (via memory), extracts company/role/deadline, and logs it as a tracked application (SQLite)
 
 ## Tech Stack
 - Ollama (qwen2.5:7b)
@@ -34,11 +35,15 @@ The name Alab represents the developer's long-standing interest and passion for 
 
 ## Known Issues
 - Occasional CUDA crash when testing, specifically if Ollama is started via windows startup apps
-- Local models (qwen2.5:7b) don't reliably call tools proactively without explicit system prompt guidance — fixed for memory tools via an explicit system prompt instructing when to check/save memory.
+- Local models (qwen2.5:7b) don't reliably call tools proactively without explicit system prompt guidance — fixed for memory tools via an explicit system prompt instructing when to check/save memory. The same pattern applies to the job-analysis tools: the model needs explicit instruction to follow up `analyze_job_posting` with `save_application`, or it may just describe the analysis without saving it.
+- Hit a `CUDA error: shared object initialization failed` crash (llama-server terminating with exit code `0xc0000409`) during Phase 4 testing — root cause was an outdated NVIDIA driver, not the app code or Ollama version. Resolved by updating the NVIDIA driver.
 
 ## Roadmap
 - [x] Phase 1: Core tool-calling backbone
 - [x] Phase 2: Voice (Whisper + TTS)
 - [x] Phase 3: Persistent memory
-- [ ] Phase 4: Domain-specific tools
-
+- [x] Phase 4: Tech-stack gap analysis (job posting analysis + application tracking)
+- [ ] Phase 5: UI
+- [ ] Phase 6: Polish/deploy
+- [ ] Phase 7: Phone access via Tailscale
+- [ ] Phase 8: Image-based visual help (moondream)
