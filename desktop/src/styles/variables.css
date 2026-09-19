@@ -1,0 +1,21 @@
+:root {
+  --color-background: #090909;
+  --color-wordmark: #b93825;
+  --color-text: #f2eeee;
+  --color-muted-text: #d8b0a8;
+  --color-muted-control: #4a302c;
+
+  --color-accent: #9d382d;
+  --color-response-card: rgba(33, 20, 18, 0.9);
+  --color-input-outer: rgba(169, 76, 66, 0.65);
+  --color-input-inner: rgba(182, 90, 80, 0.3);
+  --color-mic: #ff6b35;
+
+  --radius-window: 22px;
+  --radius-bubble: 22px;
+  --radius-input: 18px;
+
+  --shadow-card: 0 18px 45px rgba(0, 0, 0, 0.35);
+
+  --font-sans: Inter, "Segoe UI", Arial, sans-serif;
+}
