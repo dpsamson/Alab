@@ -2,6 +2,8 @@ from dotenv import load_dotenv
 load_dotenv() 
 from fastapi import FastAPI, File, UploadFile
 from fastapi.responses import FileResponse
+from fastapi.middleware.cors import CORSMiddleware
+from typing import Literal
 from pydantic import BaseModel
 import ollama
 from tools import tools, available_functions # Gets all tool functions from tools folder
@@ -11,13 +13,35 @@ import shutil
 
 app = FastAPI()
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+class ChatHistoryMessage(BaseModel):
+    role: Literal["user", "assistant"]
+    content: str
+
 class ChatRequest(BaseModel):
     message: str
+    history: list[ChatHistoryMessage] = []
 
-def process_chat(user_message: str):
+def process_chat(
+    user_message: str,
+    history: list[ChatHistoryMessage] | None = None,
+):
     messages = [
-        {"role": "system", "content": "You have access to memory tools. Whenever the user asks about themselves, ALWAYS call recall_memory first. If the user shares personal information (name, preferences, ongoing projects) without explicitly saying 'remember', proactively save it using save_memory. Use list_memories if the user asks what you know about them. When the user pastes a job description, always call analyze_job_posting first. After reviewing its result, always follow up by calling save_application with the extracted company, role, deadline, and missing_skills — do not just summarize the analysis in chat without saving it."},
-        {"role": "user", "content": user_message}
+        {
+            "role": "system",
+            "content": "You have access to memory tools. Whenever the user asks about themselves, ALWAYS call recall_memory first. If the user shares personal information (name, preferences, ongoing projects) without explicitly saying 'remember', proactively save it using save_memory. Use list_memories if the user asks what you know about them. When the user pastes a job description, always call analyze_job_posting first. After reviewing its result, always follow up by calling save_application with the extracted company, role, deadline, and missing_skills — do not just summarize the analysis in chat without saving it.",
+        },
+        *[
+            {"role": message.role, "content": message.content}
+            for message in (history or [])
+        ],
+        {"role": "user", "content": user_message},
     ]
     response = ollama.chat(
         model = "qwen2.5:7b",
@@ -46,7 +70,7 @@ def process_chat(user_message: str):
 
 @app.post("/chat")
 def chat(request:ChatRequest):
-    reply = process_chat(request.message)
+    reply = process_chat(request.message, request.history)
     return {"reply": reply}
 
 @app.post("/transcribe")

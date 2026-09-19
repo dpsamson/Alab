@@ -5,5 +5,6 @@ __pycache__/
 *.m4a
 *.wav
 *.mp3
+*.webm
 alab_memory.db
 node_modules
