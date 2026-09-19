@@ -223,3 +223,26 @@
     box-shadow: 0 0 0 7px rgba(255, 107, 53, 0);
   }
 }
+
+.voice-status {
+  margin: 0 0 8px;
+  color: var(--color-muted-text);
+  font-size: 12px;
+  text-align: center;
+}
+
+.microphone-button.is-recording {
+  animation: recording-pulse 1.25s infinite;
+  background: #e54f38;
+}
+
+@keyframes recording-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 107, 53, 0.55);
+  }
+
+  50% {
+    box-shadow: 0 0 0 9px rgba(255, 107, 53, 0);
+  }
+}
